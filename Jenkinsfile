@@ -4,7 +4,12 @@ pipeline {
         registryCredential = "dockerhub"
         dockerImage = ""
     }
-    agent any
+    agent {
+        docker {
+            image 'maven:3-alpine' 
+            args '-v /root/.m2:/root/.m2' 
+        }
+    }
     stages {
         stage ('Initialize') {
             steps {
@@ -17,7 +22,7 @@ pipeline {
 
         stage ('Code Build') {
             steps {
-                sh 'mvn -Dmaven.test.failure.ignore=true package'
+                sh 'mvn -B -DskipTests clean package'
             }
         }
         stage ('Docker Build') {
