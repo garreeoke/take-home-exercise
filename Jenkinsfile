@@ -23,11 +23,6 @@ pipeline {
             steps {
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
             }
-            post {
-                always {
-                    junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true 
-                }
-            }
         }
         stage ('Docker Build') {
             steps {
