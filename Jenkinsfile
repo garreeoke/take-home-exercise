@@ -5,10 +5,6 @@ pipeline {
         dockerImage = ""
     }
     agent any
-    tools { 
-        maven 'mvn361' 
-        jdk 'jdk8' 
-    }
     stages {
         stage ('Initialize') {
             steps {
