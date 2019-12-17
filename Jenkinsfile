@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        registry = "continuouslee/person-api"
+        registry = "garreeoke/person-api"
         registryCredential = "dockerhub"
         dockerImage = ""
     }
@@ -24,7 +24,7 @@ pipeline {
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
             }
             post {
-                success {
+                always {
                     junit 'target/surefire-reports/**/*.xml' 
                 }
             }
