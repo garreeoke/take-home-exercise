@@ -4,16 +4,16 @@ pipeline {
         registryCredential = "dockerhub"
         dockerImage = ""
     }
-    agent {
-        docker {
-            image 'maven:3-alpine' 
-            args '-v /root/.m2:/root/.m2' 
-        }
-    }
+    agent any
     stages {
         stage ('Code Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -Dmaven.test.failure.ignore=true package'
+            }
+            post {
+                success {
+                    junit 'target/surefire-reports/**/*.xml' 
+                }
             }
         }
         stage ('Docker Build') {
