@@ -20,15 +20,10 @@ spec:
     volumeMounts:
     - name: dockersock
       mountPath: /var/run/docker.sock
-    - name: m2
-      mountPath: /root/.m2
   volumes:
   - name: dockersock
     hostPath:
       path:/var/run/docker.sock
-  - name: m2
-    hostPath:
-      path: /root/.m2
 """
         }
     }
