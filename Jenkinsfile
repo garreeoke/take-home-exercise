@@ -1,8 +1,11 @@
 pipeline {
     environment {
         registry = "garreeoke/person-api"
+        dockerTag = registry + ":":${BUILD_NUMBER}", "--build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
+        dockerUser = 
         registryCredential = "dockerhub"
         dockerImage = ""
+        dockerPass = credentials('dockerPass')
     }
     agent {
         kubernetes {
@@ -20,10 +23,15 @@ spec:
     volumeMounts:
     - name: dockersock
       mountPath: /var/run/docker.sock
+    - name: m2
+      mountPath: /root/.m2
   volumes:
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock
+  - name: m2
+    hostPath:
+      path: /root/.m2
 """
         }
     }
@@ -43,26 +51,23 @@ spec:
         stage ('Docker Build') {
             steps {
                 container('docker') {
-                   script {
-                       dockerImage = docker.build (registry + ":${BUILD_NUMBER}", "--build-arg JARFILE=person-0.0.1-SNAPSHOT.jar .")
-                   }
+                  sh docker build -t dockerTag ."
                 }
             }
         }
         stage ('Docker Publish') {
             steps {
                 container('docker') {
-                   script {
-                       docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                       }
-                   }
+                    sh "echo $dockerTag"
+                    sh "docker login -u garreeoke -p $dockerPass;docker push dockerTag" 
                 }
             }
         }
         stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registry:$BUILD_NUMBER"
+          container('docker') {
+            steps{
+              sh "docker rmi $registry:$BUILD_NUMBER"
+            }
           }
         }
     }
