@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "garreeoke/person-api"
-        dockerTag = registry + ":":${BUILD_NUMBER}", "--build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
+        dockerTag = "registry + :${BUILD_NUMBER}"
         dockerUser = 
         registryCredential = "dockerhub"
         dockerImage = ""
@@ -51,7 +51,7 @@ spec:
         stage ('Docker Build') {
             steps {
                 container('docker') {
-                  sh docker build -t dockerTag ."
+                  sh docker build --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar -t dockerTag ."
                 }
             }
         }
