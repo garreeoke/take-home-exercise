@@ -1,71 +1,36 @@
-pipeline {
-    environment {
-        registry = "garreeoke/person-api"
-        dockerTag = "registry + :${BUILD_NUMBER}"
-        registryCredential = "dockerhub"
-        dockerImage = ""
-        dockerPass = credentials('dockerPass')
-    }
-    agent {
-        kubernetes {
-          label 'mypod'
-          yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: docker
-    image: maven:3.6.3-ibmjava-8-alpine
-    priviledged: true
-    volumeMounts:
-    - name: dockersock
-      mountPath: /var/run/docker.sock
-    - name: m2
-      mountPath: /root/.m2
-  volumes:
-  - name: dockersock
-    hostPath:
-      path: /var/run/docker.sock
-  - name: m2
-    hostPath:
-      path: /root/.m2
-"""
-        }
-    }
-    stages {
-        stage ('Code Build') {
-            steps {
+#!/usr/bin/env groovy
+
+def label = "docker-jenkins-${UUID.randomUUID().toString()}"
+def home = "/home/jenkins"
+def workspace = "${home}/workspace/build-docker-jenkins"
+def workdir = "${workspace}/src/localhost/docker-jenkins/"
+
+def ecrRepoName = "garreeoke"
+def tag = "$ecrRepoName:latest"
+
+podTemplate(label: label,
+        containers: [
+                containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+            ],
+            volumes: [
+                hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+            ],
+        ]) {
+    node(label) {
+        dir(workdir) {
+            stage('Checkout') {
+                timeout(time: 3, unit: 'MINUTES') {
+                    checkout scm
+                }
+            }
+
+            stage('Docker Build') {
                 container('docker') {
-                  sh 'mvn -Dmaven.test.failure.ignore=true package'
+                    echo "Building docker image..."
+                    sh "docker build -t $tag -f jenkins-docker/Dockerfile ."
                 }
             }
-            post {
-                success {
-                    junit 'target/surefire-reports/**/*.xml' 
-                }
-            }
-        }
-        stage ('Docker Build') {
-            steps {
-                container('docker') {
-                  sh "docker build --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar -t $dockerTag ."
-                }
-            }
-        }
-        stage ('Docker Publish') {
-            steps {
-                container('docker') {
-                    sh "echo $dockerTag"
-                    sh "docker login -u garreeoke -p $dockerPass;docker push $dockerTag" 
-                }
-            }
-        }
-        stage('Remove Unused docker image') {
-          steps {
-            container('docker') {
-              sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-          }
         }
     }
 }
