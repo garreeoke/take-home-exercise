@@ -2,7 +2,6 @@ pipeline {
     environment {
         registry = "garreeoke/person-api"
         dockerTag = "registry + :${BUILD_NUMBER}"
-        dockerUser = 
         registryCredential = "dockerhub"
         dockerImage = ""
         dockerPass = credentials('dockerPass')
@@ -64,8 +63,8 @@ spec:
             }
         }
         stage('Remove Unused docker image') {
-          container('docker') {
-            steps{
+          steps {
+            container('docker') {
               sh "docker rmi $registry:$BUILD_NUMBER"
             }
           }
