@@ -16,7 +16,7 @@ podTemplate(label: label,
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
             ],
-        ]) {
+        ) {
     node(label) {
         dir(workdir) {
             stage('Checkout') {
