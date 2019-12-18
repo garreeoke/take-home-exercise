@@ -51,7 +51,7 @@ spec:
         stage ('Docker Build') {
             steps {
                 container('docker') {
-                  sh docker build --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar -t dockerTag .
+                  sh "docker build --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar -t $dockerTag ."
                 }
             }
         }
@@ -59,7 +59,7 @@ spec:
             steps {
                 container('docker') {
                     sh "echo $dockerTag"
-                    sh "docker login -u garreeoke -p $dockerPass;docker push dockerTag" 
+                    sh "docker login -u garreeoke -p $dockerPass;docker push $dockerTag" 
                 }
             }
         }
