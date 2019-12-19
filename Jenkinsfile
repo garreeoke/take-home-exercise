@@ -36,13 +36,21 @@ podTemplate(label: label,
                 }
               }
             }
-
             stage('Docker Build') {
                 container('docker') {
                     echo "Building docker image... $tag"
-                    sh "ls"
                     sh "docker build -t $tag --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
                 }
+            }
+            stage ('Docker Publish') {
+              container('docker') {
+                 sh "docker login -u garreeoke -p $dockerPass;docker push $tag" 
+                }
+            }
+            stage('Remove Unused docker image') {
+              container('docker') {
+                sh "docker rmi $tag"
+              }
             }
         }
     }
