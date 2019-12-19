@@ -10,19 +10,19 @@ def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 def dockerPwd = "Niners2019"
 
 podTemplate(label: label,
+        environment {
+          DOCKER_PWD = credentials('dockerPass')
+        }
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true, envVars: [containerEnvVar(key: 'DOCKER_PWD', value: "$DOCKER_PWD")]),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
             ],
         ) {
     node(label) {
-        environment {
-          DOCKER_PWD = credentials('dockerPass')
-        }
         dir(workdir) {
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
