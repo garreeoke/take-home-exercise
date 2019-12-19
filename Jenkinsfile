@@ -11,6 +11,7 @@ def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
+                containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine'
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: false),
             ],
             volumes: [
@@ -23,6 +24,17 @@ podTemplate(label: label,
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
                 }
+            }
+  	
+	    stage ('Code Build') {
+              container('maven') {
+                sh 'mvn -Dmaven.test.failure.ignore=true package'
+              }
+              post {
+                success {
+                    junit 'target/surefire-reports/**/*.xml'
+                }
+              }
             }
 
             stage('Docker Build') {
