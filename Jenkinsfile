@@ -6,7 +6,7 @@ def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
 
 def ecrRepoName = "garreeoke"
-def tag = "$ecrRepoName:latest"
+def tag = "$ecrRepoName:" + ${BUILD_NUMBER}
 
 podTemplate(label: label,
         containers: [
