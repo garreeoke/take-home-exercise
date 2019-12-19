@@ -42,8 +42,8 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 echo "Docker login $DOCKER_COMMEN_PSW"
-                 sh "docker login -u garreeoke -p $dockerPass_PSW" 
+                 echo "Docker login $DOCKER_COMMON_PSW"
+                 sh "docker login -u garreeoke -p $DOCKER_COMMON_PSW" 
                  echo "Docker push"
                  sh "docker push $tag"
                 }
