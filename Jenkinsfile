@@ -9,14 +9,11 @@ def ecrRepoName = "garreeoke"
 def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 def dockerPwd = "Niners2019"
 
-environment {
-  DOCKER_PWD = credentials('dockerPass')
-}
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true, envVars: [containerEnvVar(key: 'DOCKER_PWD', value: "$DOCKER_PWD")]),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
@@ -43,7 +40,7 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 sh "docker login -u garreeoke -p $DOCKER_PWD" 
+                 sh "docker login -u garreeoke -p $dockerPwd" 
                  sh "docker push $tag"
                 }
             }
