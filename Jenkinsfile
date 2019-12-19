@@ -55,6 +55,7 @@ podTemplate(label: label,
                 GIT_AUTH = credentials('gareeoke-github')
               }
 	         sh('''
+                     echo "$GIT_AUTH_USR"
                      git checkout --track origin/armory
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
                      git config --global user.email "garreesett@gmail.com"
