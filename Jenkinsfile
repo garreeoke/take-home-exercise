@@ -4,7 +4,6 @@ def label = "docker-jenkins-${UUID.randomUUID().toString()}"
 def home = "/home/jenkins/agent"
 def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
-def dockerPass = credentials('dockerPass')
 
 def ecrRepoName = "garreeoke"
 def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
@@ -14,6 +13,9 @@ podTemplate(label: label,
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
+            ],
+            envVars: [
+              'dockerPass': credentials('dockerPass'),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
