@@ -51,13 +51,19 @@ podTemplate(label: label,
               }
             }
             stage ('Checkin Deployment Yaml') {
-	      sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
-              sh "git add deployment.yml"
-              sh "git config --global user.email 'garreesett@gmail.com'"
-              sh "git config --global user.name 'garreeoke'"
-              sh "git commit -m 'jenkins update'"
-              timeout(time: 3, unit: "MINUTES") {
-                checkin scm
+              environment {
+                GIT_AUTH = credentials('garreeoke-github')
+              }
+              steps {
+	         sh('''
+                     sed -i -E "s/person-api:.*/$tag/" deployment.yml
+                     git add deployment.yml
+                     git config --global user.email "garreesett@gmail.com"
+                     git config --global user.name "garreeoke"
+                     git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
+                     git commit -m "jenkins update"
+                     git push origin HEAD:armory
+                 ''')
               }
 	    }
         }
