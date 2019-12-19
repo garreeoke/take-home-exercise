@@ -42,7 +42,8 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 sh "docker login -u garreeoke -p $dockerPass;docker push $tag" 
+                 sh "docker login -u garreeoke -p $dockerPass" 
+                 sh "docker push $tag"
                 }
             }
             stage('Remove Unused docker image') {
