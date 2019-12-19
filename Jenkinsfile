@@ -16,6 +16,7 @@ podTemplate(label: label,
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+                hostPathVolume(hostPath: '/root/.m2', mountPath: '/root/.m2'),
             ],
         ) {
     node(label) {
@@ -28,7 +29,9 @@ podTemplate(label: label,
   	
 	    stage ('Code Build') {
               container('maven') {
+                echo "Maven1"
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
+                echo "Maven2"
               }
               post {
                 success {
