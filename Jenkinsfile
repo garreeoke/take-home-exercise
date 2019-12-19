@@ -52,7 +52,7 @@ podTemplate(label: label,
             }
             stage ('Checkin Deployment Yaml') {
               environment {
-                GIT_AUTH = credentials('garreeoke-github')
+                GIT_AUTH = credentials('gareeoke-github')
               }
 	         sh('''
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
