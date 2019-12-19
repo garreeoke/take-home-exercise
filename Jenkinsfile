@@ -49,6 +49,15 @@ podTemplate(label: label,
                 sh "docker rmi $tag"
               }
             }
+            stage('Checkin Deployment Yaml') {
+              steps {
+	        sh "sed -i -E 's/garreeoke\/person-api:.*/garreeoke\/$tag/' deployment.yml"
+                sh "git add deployment.yml"
+                sh "git commit -m 'jenkins update'
+              }
+              timeout(time: 3, unit: "MINUTES") {
+                checkin scm
+	    }
         }
     }
 }

@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: personapi
+  name: personapi
+  namespace: person
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: personapi
+  template:
+    metadata:
+      labels:
+        app: personapi
+    spec:
+      containers:
+      - image: garreeoke/person-api:77
+        imagePullPolicy: Always
+        name: personapi
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
