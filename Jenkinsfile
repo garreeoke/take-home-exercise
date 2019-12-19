@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 def label = "docker-jenkins-${UUID.randomUUID().toString()}"
-def home = "/home/jenkins"
+def home = "/home/jenkins/agent"
 def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
 
