@@ -51,7 +51,7 @@ podTemplate(label: label,
             }
             stage('Checkin Deployment Yaml') {
               steps {
-	        sh "sed -i -E 's/garreeoke\/person-api:.*/garreeoke\/$tag/' deployment.yml"
+	        sh 'sed -i -E "s/garreeoke\/person-api:.*/garreeoke\/$tag/" deployment.yml'
                 sh "git add deployment.yml"
                 sh "git commit -m 'jenkins update'
               }
