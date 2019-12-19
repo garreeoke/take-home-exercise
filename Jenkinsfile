@@ -29,9 +29,7 @@ podTemplate(label: label,
   	
 	    stage ('Code Build') {
               container('maven') {
-                echo "Maven1"
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
-                echo "Maven2"
               }
             }
             stage('Docker Build') {
@@ -42,7 +40,9 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
+                 echo "Docker login"
                  sh "docker login -u garreeoke -p $dockerPass" 
+                 echo "Docker push"
                  sh "docker push $tag"
                 }
             }
