@@ -9,10 +9,10 @@ def ecrRepoName = "garreeoke"
 def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 def dockerPwd = "Niners2019"
 
+environment {
+  DOCKER_PWD = credentials('dockerPass')
+}
 podTemplate(label: label,
-        environment {
-          DOCKER_PWD = credentials('dockerPass')
-        }
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
