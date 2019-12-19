@@ -21,7 +21,7 @@ podTemplate(label: label,
     node(label) {
         dir(workdir) {
             environment {
-	       dockerPass = credentials('dockerPass')
+	       dockerPass = credentials('dockerHub')
             }
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
@@ -43,7 +43,7 @@ podTemplate(label: label,
             stage ('Docker Publish') {
               container('docker') {
                  echo "Docker login $dockerPass"
-                 sh "docker login -u garreeoke -p $dockerPass" 
+                 sh "docker login -u garreeoke -p $dockerPass_USR" 
                  echo "Docker push"
                  sh "docker push $tag"
                 }
