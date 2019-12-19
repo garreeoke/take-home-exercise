@@ -11,7 +11,7 @@ def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: false),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
@@ -28,7 +28,6 @@ podTemplate(label: label,
             stage('Docker Build') {
                 container('docker') {
                     echo "Building docker image... $tag"
-                    docker ps -a
                     sh "docker build -t $tag -f jenkins-docker/Dockerfile ."
                 }
             }
