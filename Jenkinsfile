@@ -55,6 +55,7 @@ podTemplate(label: label,
                 GIT_AUTH = credentials('gareeoke-github')
               }
 	         sh('''
+                     echo "TARGET: $TARGET_BRANCH"
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
                      ls
                      git status
