@@ -27,9 +27,9 @@ podTemplate(label: label,
 
             stage('Docker Build') {
                 container('docker') {
-                    echo "Building docker image... ${tag}"
+                    echo "Building docker image... $tag"
                     sh "docker ps -a"
-                    sh "docker build -t ${tag} -f jenkins-docker/Dockerfile ."
+                    sh "docker build -t $tag -f jenkins-docker/Dockerfile ."
                 }
             }
         }
