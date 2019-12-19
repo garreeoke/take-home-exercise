@@ -7,21 +7,22 @@ def workdir = "${workspace}/src/localhost/docker-jenkins/"
 
 def ecrRepoName = "garreeoke"
 def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
+def dockerPwd = "Niners2019"
 
-environment {
-   DOCKER_COMMON = credentials('dockerHub')
-}
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true, envVars: [containerEnvVar(key: 'DOCKER_COMMON_PWD', value: $DOCKER_COMMON_PSW)]),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
             ],
         ) {
     node(label) {
+        environment {
+          DOCKER_PWD = credentials('dockerPass')
+        }
         dir(workdir) {
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
@@ -42,7 +43,7 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 sh "docker login -u garreeoke -p $DOCKER_COMMON_PWD" 
+                 sh "docker login -u garreeoke -p $DOCKER_PWD" 
                  sh "docker push $tag"
                 }
             }
