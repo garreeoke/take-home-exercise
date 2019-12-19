@@ -15,7 +15,7 @@ podTemplate(label: label,
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
             envVars: [
-              'dockerPass': credentials('dockerPass'),
+              envVar(key: 'dockerPass', value:  credentials('dockerPass')),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
