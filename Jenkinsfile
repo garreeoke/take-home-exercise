@@ -55,16 +55,14 @@ podTemplate(label: label,
                 GIT_AUTH = credentials('gareeoke-github')
               }
 	         sh('''
-                     echo "TARGET: $TARGET_BRANCH"
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
-                     ls
-                     git status
+                     git checkout -B armory
                      git config --global user.email "garreesett@gmail.com"
                      git config --global user.name "garreeoke"
                      git add deployment.yml 
                      git commit -m "[Jenkins CI] Add build file"
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
-                     git push
+                     git push origin HEAD:armory
                  ''')
 	    }
         }
