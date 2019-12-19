@@ -11,7 +11,6 @@ def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
-                containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', privileged: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
             volumes: [
@@ -28,7 +27,7 @@ podTemplate(label: label,
             }
   	
 	    stage ('Code Build') {
-              container('maven') {
+              container('jnlp') {
                 echo "Maven1"
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
                 echo "Maven2"
