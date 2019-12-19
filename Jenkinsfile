@@ -4,6 +4,7 @@ def label = "docker-jenkins-${UUID.randomUUID().toString()}"
 def home = "/home/jenkins/agent"
 def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
+def dockerPass = credentials('dockerPass')
 
 def ecrRepoName = "garreeoke"
 def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
