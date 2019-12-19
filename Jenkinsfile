@@ -54,7 +54,6 @@ podTemplate(label: label,
               environment {
                 GIT_AUTH = credentials('garreeoke-github')
               }
-              steps {
 	         sh('''
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
                      git add deployment.yml
@@ -64,7 +63,6 @@ podTemplate(label: label,
                      git commit -m "jenkins update"
                      git push origin HEAD:armory
                  ''')
-              }
 	    }
         }
     }
