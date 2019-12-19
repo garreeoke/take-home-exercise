@@ -40,7 +40,7 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 echo "Docker login"
+                 echo "Docker login $dockerPass"
                  sh "docker login -u garreeoke -p $dockerPass" 
                  echo "Docker push"
                  sh "docker push $tag"
