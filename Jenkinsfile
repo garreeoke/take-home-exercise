@@ -6,7 +6,7 @@ def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
 
 def ecrRepoName = "garreeoke"
-def tag = "person-api:" + "${BUILD_NUMER}"
+def tag = "person-api:" + "${BUILD_NUMBER}"
 def repo = "${ecrRepoName}" + "/" + "$tag"
 def dockerPwd = "Niners2019"
 
