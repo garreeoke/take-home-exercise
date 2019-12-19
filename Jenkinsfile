@@ -14,15 +14,15 @@ podTemplate(label: label,
                 containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
-            envVars: [
-              envVar(key: 'dockerPass', value:  credentials('dockerPass')),
-            ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
             ],
         ) {
     node(label) {
         dir(workdir) {
+            environment {
+	       dockerPass = credentials('dockerPass')
+            }
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
