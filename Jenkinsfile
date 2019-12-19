@@ -6,7 +6,8 @@ def workspace = "${home}/workspace/build-docker-jenkins"
 def workdir = "${workspace}/src/localhost/docker-jenkins/"
 
 def ecrRepoName = "garreeoke"
-def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
+def tag = "person-api:" + "${BUILD_NUMER}"
+def repo = "${ecrRepoName}" + "/" + "$tag"
 def dockerPwd = "Niners2019"
 
 podTemplate(label: label,
@@ -34,24 +35,24 @@ podTemplate(label: label,
             }
             stage('Docker Build') {
                 container('docker') {
-                    echo "Building docker image... $tag"
-                    sh "docker build -t $tag --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
+                    echo "Building docker image... $repo"
+                    sh "docker build -t $repo --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
                 }
             }
             stage ('Docker Publish') {
               container('docker') {
                  sh "docker login -u garreeoke -p $dockerPwd" 
-                 sh "docker push $tag"
+                 sh "docker push $repo"
                 }
             }
             stage('Remove Unused docker image') {
               container('docker') {
-                sh "docker rmi $tag"
+                sh "docker rmi $repo"
               }
             }
             stage('Checkin Deployment Yaml') {
               steps {
-	        sh 'sed -i -E "s/garreeoke\/person-api:.*/garreeoke\/$tag/" deployment.yml'
+	        sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
                 sh "git add deployment.yml"
                 sh "git commit -m 'jenkins update'
               }
