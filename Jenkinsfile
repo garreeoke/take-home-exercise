@@ -45,17 +45,15 @@ podTemplate(label: label,
                  sh "docker push $repo"
                 }
             }
-            stage('Remove Unused docker image') {
+            stage ('Remove Unused docker image') {
               container('docker') {
                 sh "docker rmi $repo"
               }
             }
-            stage('Checkin Deployment Yaml') {
-              steps {
-	        sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
-                sh "git add deployment.yml"
-                sh "git commit -m 'jenkins update'"
-              }
+            stage ('Checkin Deployment Yaml') {
+	      sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
+              sh "git add deployment.yml"
+              sh "git commit -m 'jenkins update'"
               timeout(time: 3, unit: "MINUTES") {
                 checkin scm
               }
