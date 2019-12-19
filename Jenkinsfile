@@ -32,11 +32,6 @@ podTemplate(label: label,
                 sh 'mvn -Dmaven.test.failure.ignore=true package'
                 echo "Maven2"
               }
-              post {
-                success {
-                    junit 'target/surefire-reports/**/*.xml'
-                }
-              }
             }
             stage('Docker Build') {
                 container('docker') {
