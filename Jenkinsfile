@@ -29,7 +29,7 @@ podTemplate(label: label,
                 container('docker') {
                     echo "Building docker image... $tag"
                     sh "ls"
-                    sh "docker build -t $tag -f take-home-exercise/Dockerfile ."
+                    sh "docker build -t $tag ."
                 }
             }
         }
