@@ -20,9 +20,6 @@ podTemplate(label: label,
         ) {
     node(label) {
         dir(workdir) {
-            environment {
-	       DOCKER_COMMON = credentials('dockerHub')
-            }
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
@@ -42,7 +39,7 @@ podTemplate(label: label,
             }
             stage ('Docker Publish') {
               container('docker') {
-                 sh "docker login -u garreeoke -p GwRnBa0#" 
+                 sh "docker login -u garreeoke -p Niners2019" 
                  sh "docker push $tag"
                 }
             }
