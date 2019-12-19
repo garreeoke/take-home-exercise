@@ -11,8 +11,8 @@ def tag = "${ecrRepoName}" + "/person-api:" + "${BUILD_NUMBER}"
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
-                containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine'),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: false),
+                containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', privileged: true),
+                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
             ],
             volumes: [
                 hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
