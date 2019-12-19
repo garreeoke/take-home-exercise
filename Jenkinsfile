@@ -56,12 +56,11 @@ podTemplate(label: label,
               }
 	         sh('''
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
-                     git add deployment.yml
                      git config --global user.email "garreesett@gmail.com"
                      git config --global user.name "garreeoke"
+                     git add deployment.yml && git commit -am "[Jenkins CI] Add build file"
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
-                     git commit -m "jenkins update"
-                     git push origin HEAD:armory
+                     git push origin HEAD:$TARGET_BRANCH
                  ''')
 	    }
         }
