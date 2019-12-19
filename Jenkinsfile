@@ -54,7 +54,7 @@ podTemplate(label: label,
               steps {
 	        sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
                 sh "git add deployment.yml"
-                sh "git commit -m 'jenkins update'
+                sh "git commit -m 'jenkins update'"
               }
               timeout(time: 3, unit: "MINUTES") {
                 checkin scm
