@@ -58,6 +58,7 @@ podTemplate(label: label,
               }
               timeout(time: 3, unit: "MINUTES") {
                 checkin scm
+              }
 	    }
         }
     }
