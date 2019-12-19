@@ -29,7 +29,7 @@ podTemplate(label: label,
                 container('docker') {
                     echo "Building docker image... $tag"
                     sh "ls"
-                    sh "docker build -t $tag ."
+                    sh "docker build -t $tag --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
                 }
             }
         }
