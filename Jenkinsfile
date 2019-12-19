@@ -53,8 +53,8 @@ podTemplate(label: label,
             stage ('Checkin Deployment Yaml') {
 	      sh 'sed -i -E "s/person-api:.*/$tag/" deployment.yml'
               sh "git add deployment.yml"
-              sh "git config --global user.email 'garreesett@gmail.com'
-              sh "git config --global user.name 'garreeoke'
+              sh "git config --global user.email 'garreesett@gmail.com'"
+              sh "git config --global user.name 'garreeoke'"
               sh "git commit -m 'jenkins update'"
               timeout(time: 3, unit: "MINUTES") {
                 checkin scm
