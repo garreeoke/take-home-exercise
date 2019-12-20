@@ -4,7 +4,7 @@ metadata:
   labels:
     app: personapi
   name: personapi
-  namespace: person
+  namespace: spinnaker-system
 spec:
   replicas: 1
   revisionHistoryLimit: 10
