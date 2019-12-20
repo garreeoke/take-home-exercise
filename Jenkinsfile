@@ -21,7 +21,7 @@ podTemplate(label: label,
             ],
         ) {
     node(label) {
-        withEnv(['GIT_AUTH' = credentials('gareeoke-github')])
+        withEnv(['GIT_AUTH'=credentials('gareeoke-github')])
         dir(workdir) {
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
