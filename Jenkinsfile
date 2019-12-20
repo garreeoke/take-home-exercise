@@ -52,7 +52,7 @@ podTemplate(label: label,
             }
             stage ('Checkin Deployment Yaml') {
               environment {
-                GIT_AUTH = credentials('gareeoke-github')
+                GIT_AUTH = credentials('garreeoke-github')
               }
 	         sh('''
                      echo "$GIT_AUTH_USR"
