@@ -21,6 +21,9 @@ podTemplate(label: label,
             ],
         ) {
     node(label) {
+        environment {
+          GIT_AUTH = credentials('gareeoke-github')
+        }
         dir(workdir) {
             stage('Checkout') {
                 timeout(time: 3, unit: 'MINUTES') {
@@ -51,10 +54,6 @@ podTemplate(label: label,
               }
             }
             stage ('Checkin Deployment Yaml') {
-              environment {
-                GIT_AUTH = credentials('gareeoke-github')
-              }
-              steps {
 	         sh('''
                      echo "$GIT_AUTH_USR"
                      git checkout --track origin/armory
@@ -66,7 +65,6 @@ podTemplate(label: label,
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
                      git push 
                  ''')
-              }
 	    }
         }
     }
