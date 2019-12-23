@@ -19,9 +19,11 @@ pipeline {
       stages {
         stage('Checkout') {
           steps {
-            timeout(time: 3, unit: 'MINUTES') {
-            checkout scm
-          }
+            container('jnlp') {
+               timeout(time: 3, unit: 'MINUTES') {
+               checkout scm
+               }
+            }
           }
         }
         stage ('Code Build') {
