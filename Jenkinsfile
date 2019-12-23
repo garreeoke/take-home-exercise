@@ -41,13 +41,16 @@ pipeline {
         }
         stage ('Docker Publish') {
             steps {
-               sh "docker login -u garreeoke -p $dockerPwd" 
+              container('docker') {
+                sh "docker login -u garreeoke -p $dockerPwd" 
                sh "docker push $repo"
+              }
             }
         }
         stage ('Checkin') {
             steps {
-                sh('''
+                container('docker') {
+                  sh('''
                      echo "USGR: $GIT_AUTH_USR"
                      git checkout --track origin/armory
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
@@ -57,7 +60,8 @@ pipeline {
                      git commit -m "[Jenkins CI] Add build file"
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
                      git push 
-            ''')
+                 ''')
+                }
             }
         }
       }
