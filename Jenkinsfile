@@ -7,7 +7,7 @@ pipeline {
         workspace = "${home}/workspace/armory1"
         workdir = "${workspace}/src/localhost/docker-jenkins/"
         tag = "person-api:" + "${BUILD_NUMBER}"
-        repo = "${ecrRepoName}" + "/" + "$tag"
+        repo = "garreeoke/" + "$tag"
         dockerPwd = "Niners2019"
         GIT_AUTH = credentials('gareeoke-github')
     }
