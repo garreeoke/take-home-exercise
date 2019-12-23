@@ -46,7 +46,7 @@ pipeline {
             }
         }
         stage ('Checkin') {
-           sh('''
+            steps sh('''
                      echo "USGR: $GIT_AUTH_USR"
                      git checkout --track origin/armory
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
@@ -57,6 +57,7 @@ pipeline {
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
                      git push 
             ''')
+            }
         }
       }
 }
