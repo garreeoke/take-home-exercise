@@ -46,7 +46,8 @@ pipeline {
             }
         }
         stage ('Checkin') {
-            steps sh('''
+            steps {
+                sh('''
                      echo "USGR: $GIT_AUTH_USR"
                      git checkout --track origin/armory
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
