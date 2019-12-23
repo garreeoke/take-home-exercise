@@ -19,13 +19,13 @@ spec:
     tty: true
     privileged: true
     volumeMounts:
-    - mountPath: /home/jenkins/agent/workspace/build-docker-jenkins/src/localhost/docker-jenkins/
-      name: stuff
+    #- mountPath: /home/jenkins/agent/workspace/build-docker-jenkins/src/localhost/docker-jenkins/
+    #  name: stuff
     - mountPath: /var/run/docker.sock
       name: dockersock
   volumes:
-  - name: stuff
-    emptyDir: {}
+  #- name: stuff
+  #  emptyDir: {}
   - name: dockersock
     hostPath:
       path: /var/run/docker.sock

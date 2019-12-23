@@ -4,7 +4,7 @@ pipeline {
         registryCredential = "dockerhub"
         label = "docker-jenkins-${UUID.randomUUID().toString()}"
         home = "/home/jenkins/agent"
-        workspace = "${home}/workspace/build-docker-jenkins"
+        workspace = "${home}/workspace/armory1"
         workdir = "${workspace}/src/localhost/docker-jenkins/"
         tag = "person-api:" + "${BUILD_NUMBER}"
         repo = "${ecrRepoName}" + "/" + "$tag"
@@ -19,11 +19,9 @@ pipeline {
       stages {
         stage('Checkout') {
           steps {
-            container('jnlp') {
                timeout(time: 3, unit: 'MINUTES') {
                checkout scm
                }
-            }
           }
         }
         stage ('Code Build') {
