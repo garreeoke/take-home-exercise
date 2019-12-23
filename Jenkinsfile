@@ -12,32 +12,10 @@ pipeline {
         GIT_AUTH = credentials('gareeoke-github')
     }
     agent {
-      kubernetes {
-        yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    some-label: some-label-value
-spec:
-  containers:
-  - name: jnlp
-    image: jenkins/jnlp-slave:alpine
-  - name: maven
-    image: maven:3.6.3-ibmjava-8-alpine
-    command:
-    - cat
-    tty: true
-  - name: docker
-    image: docker
-    command:
-    - cat
-    tty: true
-    privileged: true
-"""
+     kubernetes {
+        yamlFile 'kubepod.yml'
       } 
     }
-    dir (workdir) {
       stages {
         stage('Checkout') {
           timeout(time: 3, unit: 'MINUTES') {
@@ -79,5 +57,4 @@ spec:
             ''')
         }
       }
-    }
 }
