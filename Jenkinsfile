@@ -1,59 +1,73 @@
-#!/usr/bin/env groovy
-
-def label = "docker-jenkins-${UUID.randomUUID().toString()}"
-def home = "/home/jenkins/agent"
-def workspace = "${home}/workspace/build-docker-jenkins"
-def workdir = "${workspace}/src/localhost/docker-jenkins/"
-
-def ecrRepoName = "garreeoke"
-def tag = "person-api:" + "${BUILD_NUMBER}"
-def repo = "${ecrRepoName}" + "/" + "$tag"
-def dockerPwd = "Niners2019"
-
-podTemplate(label: label,
-        containers: [
-                containerTemplate(name: 'jnlp', image: 'jenkins/jnlp-slave:alpine'),
-                containerTemplate(name: 'maven', image: 'maven:3.6.3-ibmjava-8-alpine', command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true, privileged: true),
-            ],
-            volumes: [
-                hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
-            ],
-        ) {
-    node(label) {
-        withEnv(['GIT_AUTH'=credentials('gareeoke-github')])
-        dir(workdir) {
-            stage('Checkout') {
-                timeout(time: 3, unit: 'MINUTES') {
-                    checkout scm
-                }
-            }
-  	
-	    stage ('Code Build') {
+pipeline {
+    environment {
+        registry = "garreeoke/person-api"
+        registryCredential = "dockerhub"
+        label = "docker-jenkins-${UUID.randomUUID().toString()}"
+        home = "/home/jenkins/agent"
+        workspace = "${home}/workspace/build-docker-jenkins"
+        workdir = "${workspace}/src/localhost/docker-jenkins/"
+        tag = "person-api:" + "${BUILD_NUMBER}"
+        repo = "${ecrRepoName}" + "/" + "$tag"
+        dockerPwd = "Niners2019"
+        GIT_AUTH = credentials('gareeoke-github')
+    }
+    agent {
+      kubernetes {
+        yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: some-label-value
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/jnlp-slave:alpine
+  - name: maven
+    image: maven:3.6.3-ibmjava-8-alpine
+    command:
+    - cat
+    tty: true
+  - name: docker
+    image: docker
+    command:
+    - cat
+    tty: true
+    privileged: true
+"""
+      } 
+    }
+    dir (workdir) {
+      stages {
+        stage('Checkout') {
+          timeout(time: 3, unit: 'MINUTES') {
+            checkout scm
+          }
+        }
+        stage ('Code Build') {
+            steps {
               container('maven') {
-                sh 'mvn -Dmaven.test.failure.ignore=true package'
-              }
-            }
-            stage('Docker Build') {
-                container('docker') {
-                    echo "Building docker image... $repo"
-                    sh "docker build -t $repo --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
+                  sh 'mvn -Dmaven.test.failure.ignore=true package'
                 }
             }
-            stage ('Docker Publish') {
+        }
+        stage ('Docker Build') {
+            steps {
               container('docker') {
-                 sh "docker login -u garreeoke -p $dockerPwd" 
-                 sh "docker push $repo"
-                }
-            }
-            stage ('Remove Unused docker image') {
-              container('docker') {
-                sh "docker rmi $repo"
+                echo "Building docker image ... $repo"
+                sh "docker build -t $repo --build-arg JARFILE=person-0.0.1-SNAPSHOT.jar ."
               }
             }
-            stage ('Checkin Deployment Yaml') {
-	         sh('''
-                     echo "$GIT_AUTH_USR"
+        }
+        stage ('Docker Publish') {
+            steps {
+               sh "docker login -u garreeoke -p $dockerPwd" 
+               sh "docker push $repo"
+            }
+        }
+        stage ('Checkin') {
+           sh('''
+                     echo "USGR: $GIT_AUTH_USR"
                      git checkout --track origin/armory
                      sed -i -E "s/person-api:.*/$tag/" deployment.yml
                      git config --global user.email "garreesett@gmail.com"
@@ -62,8 +76,8 @@ podTemplate(label: label,
                      git commit -m "[Jenkins CI] Add build file"
                      git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
                      git push 
-                 ''')
-	    }
+            ''')
         }
+      }
     }
 }
