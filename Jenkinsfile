@@ -18,8 +18,10 @@ pipeline {
     }
       stages {
         stage('Checkout') {
-          timeout(time: 3, unit: 'MINUTES') {
+          steps {
+            timeout(time: 3, unit: 'MINUTES') {
             checkout scm
+          }
           }
         }
         stage ('Code Build') {
