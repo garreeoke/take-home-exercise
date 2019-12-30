@@ -17,7 +17,7 @@ spec:
         app: personapi
     spec:
       containers:
-      - image: garreeoke/person-api:806
+      - image: garreeoke/person-api:807
         imagePullPolicy: Always
         name: personapi
         ports:
